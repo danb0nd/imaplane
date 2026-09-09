@@ -10,6 +10,8 @@ Local-first HTTP API + MCP + OpenAPI. First-class **iCloud / Apple Mail** and **
 
 IMAP plane · IMAP lane · I’m a plane.
 
+**Site:** [https://imaplane.com](https://imaplane.com) (Cloudflare Pages; also [https://imaplane.pages.dev](https://imaplane.pages.dev)).
+
 Agents authenticate with a bridge token. Mailbox passwords never leave this machine.
 
 **Default off:** sending, scheduled sweeps, public bind, launchd.
@@ -46,6 +48,14 @@ npm run build
 echo "$(pwd)/dist/mcp.js"
 ```
 
+```powershell
+# Windows (PowerShell)
+(Resolve-Path .\dist\mcp.js).Path
+# or from cmd: %CD%\dist\mcp.js
+```
+
+`node` must be on your `PATH` on Windows as well (same as macOS/Linux).
+
 **3. Add a stdio MCP server** named `imaplane` in your client:
 
 | Client | How |
@@ -69,6 +79,14 @@ Generic JSON (Claude Desktop and most hosts):
   }
 }
 ```
+
+On Windows, use a Windows-style absolute path in `args` (escaped backslashes in JSON), for example:
+
+```json
+"args": ["C:\\Users\\YOU\\Programming\\imaplane\\dist\\mcp.js"]
+```
+
+Forward slashes often work in JSON too: `C:/Users/YOU/imaplane/dist/mcp.js`.
 
 The MCP process loads `BRIDGE_TOKEN` from this project’s `.env` (or set `BRIDGE_TOKEN` / optional `BRIDGE_URL` in the server `env` block).
 
@@ -266,7 +284,7 @@ imaplane init | start | mcp | rules dry-run|apply | folders apply|--dry-run | ve
 
 ## Landing page
 
-Optional local marketing page lives in `landing-page/` (gitignored). Open `landing-page/index.html` on your machine if you have it.
+Public site: [https://imaplane.com](https://imaplane.com) (Cloudflare Pages). Optional local marketing page lives in `landing-page/` (gitignored). Open `landing-page/index.html` on your machine if you have it.
 
 ## Develop
 
