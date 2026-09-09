@@ -234,7 +234,7 @@ imaplane init | start | mcp | rules dry-run|apply | folders apply|--dry-run | ve
 
 ## Landing page
 
-Static, no build: open [`landing-page/index.html`](./landing-page/index.html) in a browser (`open landing-page/index.html` on macOS).
+Optional local marketing page lives in `landing-page/` (gitignored). Open `landing-page/index.html` on your machine if you have it.
 
 ## Develop
 
