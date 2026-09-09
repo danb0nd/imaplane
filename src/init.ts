@@ -16,7 +16,7 @@ export async function runInit(rootDir: string): Promise<void> {
 
   const rl = readline.createInterface({ input, output });
   try {
-    console.log("Imaplane — local IMAP plane for agents\n");
+    console.log("Imaplane — local IMAP plane for agents and apps\n");
 
     const token =
       (await ask(rl, "BRIDGE_TOKEN (blank = generate)", "")) || randomBytes(32).toString("hex");

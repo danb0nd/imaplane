@@ -4,15 +4,15 @@
   <img src="assets/logo.png" alt="Imaplane — bot on a paper plane" width="220" />
 </p>
 
-A control plane so agents can use IMAP — anything you allow, not everything.
+A local IMAP control plane for **AI agents** and **your own programs** — anything you allow, not everything.
 
-Local-first HTTP API + MCP + OpenAPI. First-class **iCloud / Apple Mail** and **generic IMAP**. Loopback by default. You start it on purpose.
+**Agents** use MCP. **Scripts, backends, CLIs, and apps** call the same local HTTP API (OpenAPI) to read, search, and move mail. First-class **iCloud / Apple Mail** and **generic IMAP**. Loopback by default. You start it on purpose.
 
 IMAP plane · IMAP lane · I’m a plane.
 
 **Site:** [https://imaplane.com](https://imaplane.com) (Cloudflare Pages; also [https://imaplane.pages.dev](https://imaplane.pages.dev)).
 
-Agents authenticate with a bridge token. Mailbox passwords never leave this machine.
+Authenticate with a bridge token. Mailbox passwords never leave this machine.
 
 **Default off:** sending, scheduled sweeps, public bind, launchd.
 
@@ -168,6 +168,8 @@ accounts:
 
 ## HTTP API
 
+Same surface MCP uses. Call it from curl, a backend, a CLI, or generate a client from OpenAPI.
+
 Base: `http://127.0.0.1:8787/v1`  
 Auth: `Authorization: Bearer $BRIDGE_TOKEN` except `/health`  
 Optional query/body: `account`
@@ -190,7 +192,7 @@ Optional query/body: `account`
 | POST | `/rules/apply` | `{ "dry_run": true }` |
 | POST | `/messages/send` | **Only if `send.enabled`** |
 
-OpenAPI: [`openapi.yaml`](./openapi.yaml).
+OpenAPI: [`openapi.yaml`](./openapi.yaml). Import it to generate a client in any language.
 
 ## Folder profiles
 

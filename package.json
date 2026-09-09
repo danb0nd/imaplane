@@ -2,7 +2,7 @@
   "name": "imaplane",
   "version": "0.2.0",
   "private": false,
-  "description": "Imaplane — local IMAP plane for agents. HTTP API + MCP + OpenAPI. iCloud and generic IMAP.",
+  "description": "Imaplane — local IMAP plane for agents and apps. HTTP API + MCP + OpenAPI. iCloud and generic IMAP.",
   "license": "MIT",
   "type": "module",
   "engines": {

@@ -67,7 +67,7 @@ async function main(): Promise<void> {
 }
 
 function printHelp(): void {
-  console.log(`${TITLE} ${VERSION} — local IMAP plane for agents
+  console.log(`${TITLE} ${VERSION} — local IMAP plane for agents and apps
 
 Usage:
   imaplane init              First-run wizard (needs a TTY; mints BRIDGE_TOKEN)
