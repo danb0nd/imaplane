@@ -286,6 +286,10 @@ imaplane init | start | mcp | rules dry-run|apply | folders apply|--dry-run | ve
 
 Public site: [https://imaplane.com](https://imaplane.com) (Cloudflare Pages). Optional local marketing page lives in `landing-page/` (gitignored). Open `landing-page/index.html` on your machine if you have it.
 
+## Help make it better
+
+Issues and PRs welcome on [GitHub](https://github.com/danb0nd/imaplane/issues). Ideas especially welcome for folder profiles, rules, providers, and MCP docs.
+
 ## Develop
 
 ```bash
