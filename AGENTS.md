@@ -1,6 +1,6 @@
 # Imaplane
 
-Local HTTP + MCP plane so agents can read and file mail over IMAP. Secrets stay in `.env` / env interpolation — never in git.
+Local HTTP + MCP plane so agents — and any HTTP client — can read and file mail over IMAP. Secrets stay in `.env` / env interpolation — never in git.
 
 - Stack: Node 20+, TypeScript, Express, imapflow.
 - IMAP lives only in `src/imap.ts` (one pool per account). HTTP process: `src/index.ts` / `src/server.ts`.

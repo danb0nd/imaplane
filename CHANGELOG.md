@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- README / package copy: Imaplane is a local HTTP + OpenAPI plane for agents **and** custom apps/scripts (not agents-only).
 - IMAP connect/auth failures no longer crash the HTTP process. `/v1/health` stays up and reports `imap.connected` / `imap.error`.
 - README Quick start: build before `npx imaplane init`; document TTY-only init, env-only setup, `BRIDGE_TOKEN` generation (`openssl rand -hex 32`), and Node 20+ / dep engine warnings.
 

@@ -1,6 +1,6 @@
 # Imaplane — spec
 
-Local **IMAP plane** for agents: HTTP API + MCP + OpenAPI. Agents list, search, file, and (optionally) send mail. Secrets stay on the machine that runs the plane.
+Local **IMAP plane** for agents and apps: HTTP API + MCP + OpenAPI. List, search, file, and (optionally) send mail. Secrets stay on the machine that runs the plane.
 
 **Name:** Imaplane — IMAP plane, and “I’m a plane”.
 

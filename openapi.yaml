@@ -3,7 +3,7 @@ info:
   title: Imaplane
   version: 0.2.0
   description: |
-    Local IMAP plane for agents. Read and organise mail (iCloud or generic IMAP).
+    Local IMAP plane for agents and apps. Read and organise mail (iCloud or generic IMAP).
     Optional SMTP send when send.enabled is true.
     Authenticate with Authorization: Bearer <BRIDGE_TOKEN> except /health.
     Optional account query/body selects a named account (default_account otherwise).
