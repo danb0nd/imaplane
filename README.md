@@ -18,10 +18,29 @@ Agents authenticate with a bridge token. Mailbox passwords never leave this mach
 
 ## Quick start
 
+Requires **Node 20+**. Some dependencies (notably `sanitize-html`) may print an `EBADENGINE` warning unless you are on Node 22.12+; install and runtime still work on Node 20.
+
 ```bash
 npm install
+npm run build              # required before `npx imaplane` (the bin is dist/cli.js)
+```
+
+Then configure. Interactive wizard (**needs a TTY**; it mints `BRIDGE_TOKEN`):
+
+```bash
 npx imaplane init          # token + iCloud and/or IMAP account
-npm run build
+```
+
+Or env-only / headless (`imaplane init` refuses without a terminal — no flags):
+
+```bash
+cp .env.example .env
+openssl rand -hex 32       # paste into BRIDGE_TOKEN= in .env (≥16 chars; do not leave empty)
+# set ICLOUD_USER + ICLOUD_APP_PASSWORD (app-specific password, not your Apple ID password)
+# or copy imaplane.yaml.example → imaplane.yaml for named / generic IMAP accounts
+```
+
+```bash
 npm start                  # HTTP plane owns IMAP
 ```
 
@@ -29,7 +48,9 @@ npm start                  # HTTP plane owns IMAP
 curl -sS http://127.0.0.1:8787/v1/health
 ```
 
-Env-only iCloud (no yaml) still works: copy [`.env.example`](./.env.example) → `.env` with `ICLOUD_USER`, `ICLOUD_APP_PASSWORD`, `BRIDGE_TOKEN`.
+`/v1/health` is process liveness: it stays up if IMAP is down (wrong password, network, etc.). `imap.connected` will be `false` and `imap.error` explains the last connect/auth failure. A valid mailbox and app-specific password are still required for a healthy IMAP connection.
+
+Env-only iCloud (no yaml) still works: `.env` with `ICLOUD_USER`, `ICLOUD_APP_PASSWORD`, and a generated `BRIDGE_TOKEN`.
 
 ## MCP (Claude, Codex, Grok, Cursor, …)
 
@@ -153,7 +174,7 @@ Optional query/body: `account`
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/health` | Liveness |
+| GET | `/health` | Liveness (process up even if IMAP is down; see `imap.connected` / `imap.error`) |
 | GET | `/accounts` | Named accounts |
 | GET | `/folders` | List mailboxes |
 | POST | `/folders` | `{ "name": "BotMail/Action" }` |
@@ -297,4 +318,4 @@ npm test          # mocked IMAP, no real credentials
 npm run build
 ```
 
-Node 20+. Spec: [`SPEC.md`](./SPEC.md). Roadmap: [`ROADMAP.md`](./ROADMAP.md). License: MIT.
+Node 20+ (some deps may warn for 22.12+; see Quick start). Spec: [`SPEC.md`](./SPEC.md). Roadmap: [`ROADMAP.md`](./ROADMAP.md). License: MIT.

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- IMAP connect/auth failures no longer crash the HTTP process. `/v1/health` stays up and reports `imap.connected` / `imap.error`.
+- README Quick start: build before `npx imaplane init`; document TTY-only init, env-only setup, `BRIDGE_TOKEN` generation (`openssl rand -hex 32`), and Node 20+ / dep engine warnings.
+
 ## 0.2.0 — 2026-09-09
 
 - Rename to **Imaplane** (IMAP plane / “I’m a plane”). MIT license.

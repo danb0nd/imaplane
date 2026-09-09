@@ -39,12 +39,13 @@ export class ImapBackend {
   private stopping = false;
   private opChain: Promise<unknown> = Promise.resolve();
   private generation = 0;
+  private lastError: string | null = null;
 
   constructor(private readonly opts: ImapConnectionOptions) {}
 
   start(): void {
     this.stopping = false;
-    void this.connect();
+    this.connectInBackground();
   }
 
   async stop(): Promise<void> {
@@ -72,9 +73,11 @@ export class ImapBackend {
 
   health(): ImapHealth {
     const connected = Boolean(this.client?.usable);
+    const status = connected ? "connected" : this.status;
     return {
       connected,
-      status: connected ? "connected" : this.status,
+      status,
+      ...(!connected && this.lastError ? { error: this.lastError } : {}),
     };
   }
 
@@ -336,8 +339,9 @@ export class ImapBackend {
       await client.connect();
     } catch (err) {
       this.status = "disconnected";
+      this.lastError = connectFailureMessage(err);
       this.scheduleReconnect();
-      throw new HttpError(503, `imap connect failed: ${errorMessage(err)}`);
+      throw new HttpError(503, this.lastError);
     }
 
     if (this.stopping || generation !== this.generation) {
@@ -351,6 +355,7 @@ export class ImapBackend {
 
     this.client = client;
     this.status = "connected";
+    this.lastError = null;
     this.reconnectDelay = RECONNECT_MIN_MS;
     log.info("imap connected", { account: this.opts.name, host: this.opts.host, user: this.opts.user });
 
@@ -381,11 +386,19 @@ export class ImapBackend {
     this.reconnectDelay = Math.min(this.reconnectDelay * 2, RECONNECT_MAX_MS);
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
-      void this.connect().catch((err) => {
-        log.warn("imap reconnect failed", { error: errorMessage(err) });
-      });
+      this.connectInBackground();
     }, delay);
     this.reconnectTimer.unref?.();
+  }
+
+  /** Background connect used by start() and reconnect — never reject at process level. */
+  private connectInBackground(): void {
+    void this.connect().catch((err) => {
+      log.warn("imap connect failed", {
+        account: this.opts.name,
+        error: errorMessage(err),
+      });
+    });
   }
 }
 
@@ -447,6 +460,21 @@ function byUidDesc(a: MessageHeader, b: MessageHeader): number {
 function errorMessage(err: unknown): string {
   if (err instanceof Error) return err.message;
   return String(err);
+}
+
+function connectFailureMessage(err: unknown): string {
+  const msg = errorMessage(err);
+  const lower = msg.toLowerCase();
+  if (
+    lower.includes("authentication") ||
+    lower.includes("authfail") ||
+    lower.includes("invalid credentials") ||
+    lower.includes("login failed") ||
+    lower.includes("invalid login")
+  ) {
+    return "imap authentication failed";
+  }
+  return `imap connect failed: ${msg}`;
 }
 
 function isConnectionError(err: unknown): boolean {

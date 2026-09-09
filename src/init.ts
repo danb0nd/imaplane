@@ -7,7 +7,9 @@ import { stringify as stringifyYaml } from "yaml";
 
 export async function runInit(rootDir: string): Promise<void> {
   if (!process.stdin.isTTY) {
-    console.error("imaplane init needs a terminal. Copy imaplane.yaml.example and .env.example instead.");
+    console.error(
+      "imaplane init needs a terminal. For a headless setup: copy .env.example → .env, generate BRIDGE_TOKEN with `openssl rand -hex 32` (must be ≥16 chars), and copy imaplane.yaml.example if you need yaml.",
+    );
     process.exitCode = 1;
     return;
   }
