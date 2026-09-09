@@ -1,8 +1,10 @@
 # Imaplane
 
-Local **IMAP plane** for agents — HTTP API, MCP, and OpenAPI. First-class **iCloud / Apple Mail** and **generic IMAP**. Loopback by default. You start it on purpose.
+A control plane so agents can use IMAP — anything you allow, not everything.
 
-IMAP plane. I’m a plane.
+Local-first HTTP API + MCP + OpenAPI. First-class **iCloud / Apple Mail** and **generic IMAP**. Loopback by default. You start it on purpose.
+
+IMAP plane · IMAP lane · I’m a plane.
 
 Agents authenticate with a bridge token. Mailbox passwords never leave this machine.
 
@@ -225,6 +227,10 @@ imaplane init | start | mcp | rules dry-run|apply | folders apply|--dry-run | ve
 ```
 
 `npm start` is the same as `imaplane start`. launchd scripts exist under `scripts/` if you want login start — **not installed by default**.
+
+## Landing page
+
+Static, no build: open [`landing-page/index.html`](./landing-page/index.html) in a browser (`open landing-page/index.html` on macOS).
 
 ## Develop
 
