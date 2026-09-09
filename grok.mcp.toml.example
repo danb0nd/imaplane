@@ -1,0 +1,12 @@
+# Copy the block below into ~/.grok/config.toml (or run the grok mcp add
+# command in the README). MCP talks to the local HTTP plane only — it does
+# not open IMAP and does not need the mailbox password.
+#
+# Start the HTTP service first (`npm start` or `imaplane start`). MCP loads
+# BRIDGE_TOKEN from this project's .env.
+
+[mcp_servers.imaplane]
+command = "node"
+args = ["/ABS/PATH/TO/imaplane/dist/mcp.js"]
+startup_timeout_sec = 15
+tool_timeout_sec = 60

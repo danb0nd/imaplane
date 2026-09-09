@@ -1,0 +1,26 @@
+name: botmail
+protect:
+  - Important
+  - Follow Up
+  - Archive
+  - Sent Messages
+  - Drafts
+  - Junk
+  - Deleted Messages
+folders:
+  - path: BotMail/InboxClear
+    purpose: Seen and done; keep, but not in INBOX.
+  - path: BotMail/Action
+    purpose: The user needs to do something.
+  - path: BotMail/Waiting
+    purpose: Ball is in someone else's court.
+  - path: BotMail/FYI
+    purpose: Worth knowing, no action.
+  - path: BotMail/Park
+    purpose: Keep out of the way; not a to-do.
+  - path: BotMail/Receipts
+    purpose: Orders, invoices, payments, tickets.
+  - path: BotMail/Noise
+    purpose: Newsletters, marketing, alerts.
+  - path: BotMail/DeleteQueue
+    purpose: Candidates to drop later; do not trash during triage.

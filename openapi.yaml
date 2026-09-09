@@ -1,0 +1,267 @@
+openapi: 3.1.0
+info:
+  title: Imaplane
+  version: 0.2.0
+  description: |
+    Local IMAP plane for agents. Read and organise mail (iCloud or generic IMAP).
+    Optional SMTP send when send.enabled is true.
+    Authenticate with Authorization: Bearer <BRIDGE_TOKEN> except /health.
+    Optional account query/body selects a named account (default_account otherwise).
+servers:
+  - url: http://127.0.0.1:8787/v1
+security:
+  - bearerAuth: []
+paths:
+  /health:
+    get:
+      security: []
+      summary: Liveness
+      responses:
+        "200":
+          description: Process is up
+  /accounts:
+    get:
+      summary: List named accounts
+      responses:
+        "200":
+          description: Account list
+  /folders:
+    get:
+      summary: List mailboxes
+      parameters:
+        - $ref: "#/components/parameters/account"
+      responses:
+        "200":
+          description: Folder list
+    post:
+      summary: Create folder
+      parameters:
+        - $ref: "#/components/parameters/account"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  example: BotMail/Action
+                account: { type: string }
+      responses:
+        "201":
+          description: Created
+  /folder-profile:
+    get:
+      summary: Saved folder profile
+      responses:
+        "200":
+          description: Profile or null
+    put:
+      summary: Save folder profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FolderProfile"
+      responses:
+        "200":
+          description: Saved
+  /folder-profile/apply:
+    post:
+      summary: Create missing folders from the profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dry_run: { type: boolean, default: true }
+                account: { type: string }
+                profile:
+                  $ref: "#/components/schemas/FolderProfile"
+      responses:
+        "200":
+          description: Create/exists/skipped_protected per path
+  /messages:
+    get:
+      summary: List headers (newest first)
+      parameters:
+        - in: query
+          name: folder
+          schema: { type: string, default: INBOX }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 50, maximum: 200 }
+        - in: query
+          name: unseen
+          schema: { type: boolean }
+        - $ref: "#/components/parameters/account"
+      responses:
+        "200":
+          description: Message headers
+  /messages/send:
+    post:
+      summary: Send via SMTP (only if send.enabled)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [to, subject]
+              properties:
+                account: { type: string }
+                to: { type: string }
+                cc: { type: string }
+                bcc: { type: string }
+                subject: { type: string }
+                text: { type: string }
+                html: { type: string }
+      responses:
+        "202":
+          description: Accepted
+        "404":
+          description: Send not enabled
+  /messages/{uid}:
+    get:
+      summary: Read one message
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema: { type: integer }
+        - in: query
+          name: folder
+          schema: { type: string, default: INBOX }
+        - $ref: "#/components/parameters/account"
+      responses:
+        "200":
+          description: Message body (text + sanitized html + attachment metadata)
+  /messages/{uid}/move:
+    post:
+      summary: Move a message
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [from, to]
+              properties:
+                from: { type: string, example: INBOX }
+                to: { type: string, example: BotMail/Action }
+                account: { type: string }
+      responses:
+        "200":
+          description: Moved
+  /messages/{uid}/flags:
+    post:
+      summary: Add or remove flags
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [folder]
+              properties:
+                folder: { type: string }
+                add:
+                  type: array
+                  items: { type: string }
+                  example: ["\\Seen"]
+                remove:
+                  type: array
+                  items: { type: string }
+                account: { type: string }
+      responses:
+        "200":
+          description: Flags after update
+  /search:
+    get:
+      summary: IMAP SEARCH
+      parameters:
+        - in: query
+          name: folder
+          schema: { type: string, default: INBOX }
+        - in: query
+          name: q
+          schema: { type: string }
+        - in: query
+          name: from
+          schema: { type: string }
+        - in: query
+          name: subject
+          schema: { type: string }
+        - in: query
+          name: unseen
+          schema: { type: boolean }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 50 }
+        - $ref: "#/components/parameters/account"
+      responses:
+        "200":
+          description: Matching headers
+  /rules:
+    get:
+      summary: List loaded rules
+      responses:
+        "200":
+          description: Rules
+  /rules/apply:
+    post:
+      summary: Dry-run or apply rules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dry_run: { type: boolean, default: true }
+                account: { type: string }
+      responses:
+        "200":
+          description: Hits
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    account:
+      in: query
+      name: account
+      schema: { type: string }
+      description: Named account; default_account if omitted
+  schemas:
+    FolderProfile:
+      type: object
+      required: [folders]
+      properties:
+        name: { type: string }
+        protect:
+          type: array
+          items: { type: string }
+          example: [Important, Follow Up]
+        folders:
+          type: array
+          items:
+            type: object
+            required: [path]
+            properties:
+              path: { type: string }
+              purpose: { type: string }

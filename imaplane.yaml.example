@@ -1,0 +1,69 @@
+# Copy to imaplane.yaml (gitignored). Keep secrets in .env as ${VAR}.
+
+host: 127.0.0.1
+port: 8787
+default_account: icloud
+
+send:
+  enabled: false
+
+sweeps:
+  enabled: false
+  interval: 15m
+  # cron: "*/15 * * * *"
+
+accounts:
+  icloud:
+    provider: icloud
+    user: ${ICLOUD_USER}
+    password: ${ICLOUD_APP_PASSWORD}
+    # imap/smtp hosts default to Apple Mail (imap.mail.me.com / smtp.mail.me.com)
+
+  # work:
+  #   provider: imap
+  #   user: ${WORK_USER}
+  #   password: ${WORK_PASSWORD}
+  #   imap:
+  #     host: mail.example.com
+  #     port: 993
+  #     tls: true
+  #   smtp:
+  #     host: mail.example.com
+  #     port: 587
+  #     tls: false
+
+folder_profiles:
+  botmail:
+    protect:
+      - Important
+      - Follow Up
+      - Archive
+      - Sent Messages
+      - Drafts
+    folders:
+      - path: BotMail/InboxClear
+        purpose: Seen and done; keep, but not in INBOX.
+      - path: BotMail/Action
+        purpose: The user needs to do something.
+      - path: BotMail/Waiting
+        purpose: Ball is in someone else's court.
+      - path: BotMail/FYI
+        purpose: Worth knowing, no action.
+      - path: BotMail/Park
+        purpose: Keep out of the way; not a to-do.
+      - path: BotMail/Receipts
+        purpose: Orders, invoices, payments, tickets.
+      - path: BotMail/Noise
+        purpose: Newsletters, marketing, alerts.
+      - path: BotMail/DeleteQueue
+        purpose: Candidates to drop later.
+
+# rules:
+#   - name: stripe-receipts
+#     folder: INBOX
+#     match:
+#       from: stripe.com
+#       subject: receipt
+#     actions:
+#       move: BotMail/Receipts
+#       add_flags: ["\\Seen"]
