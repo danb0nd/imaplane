@@ -1,5 +1,9 @@
 # Imaplane
 
+<p align="center">
+  <img src="assets/logo.png" alt="Imaplane — bot on a paper plane" width="220" />
+</p>
+
 A control plane so agents can use IMAP — anything you allow, not everything.
 
 Local-first HTTP API + MCP + OpenAPI. First-class **iCloud / Apple Mail** and **generic IMAP**. Loopback by default. You start it on purpose.

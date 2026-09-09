@@ -22,3 +22,6 @@ coverage/
 .direnv/
 .turbo/
 *.tsbuildinfo
+
+# Local marketing site (keep private / iterate offline)
+landing-page/
