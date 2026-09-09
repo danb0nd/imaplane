@@ -70,7 +70,7 @@ function printHelp(): void {
   console.log(`${TITLE} ${VERSION} — local IMAP plane for agents
 
 Usage:
-  imaplane init              First-run wizard (token + iCloud and/or IMAP)
+  imaplane init              First-run wizard (needs a TTY; mints BRIDGE_TOKEN)
   imaplane start             HTTP API on loopback (owns IMAP)
   imaplane mcp               stdio MCP client of the HTTP API
   imaplane rules dry-run     Preview file-based rules

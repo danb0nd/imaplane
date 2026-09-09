@@ -52,16 +52,20 @@ export class ImaplaneService implements MailBackend {
         connected: h.connected,
         status: h.status,
         send_enabled: this.config.sendEnabled && account.sendEnabled,
+        ...(h.error ? { error: h.error } : {}),
       };
     });
     const any = accounts.some((a) => a.connected);
     const allDisconnected = accounts.every((a) => a.status === "disconnected");
+    const defaultAccount = accounts.find((a) => a.name === this.config.defaultAccount);
+    const firstError = defaultAccount?.error ?? accounts.find((a) => a.error)?.error;
     return {
       connected: any,
       status: any ? "connected" : allDisconnected ? "disconnected" : "connecting",
       send_enabled: this.config.sendEnabled,
       default_account: this.config.defaultAccount,
       accounts,
+      ...(!any && firstError ? { error: firstError } : {}),
     };
   }
 

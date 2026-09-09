@@ -73,6 +73,8 @@ export type AccountHealth = {
   connected: boolean;
   status: "connected" | "connecting" | "disconnected";
   send_enabled: boolean;
+  /** Last IMAP connect/auth failure, when not connected. */
+  error?: string;
 };
 
 export type ImapHealth = {
@@ -81,6 +83,8 @@ export type ImapHealth = {
   send_enabled?: boolean;
   default_account?: string;
   accounts?: AccountHealth[];
+  /** Last IMAP connect/auth failure for the default account (or first down account). */
+  error?: string;
 };
 
 export type AccountInfo = {
