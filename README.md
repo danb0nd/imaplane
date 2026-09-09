@@ -29,6 +29,54 @@ curl -sS http://127.0.0.1:8787/v1/health
 
 Env-only iCloud (no yaml) still works: copy [`.env.example`](./.env.example) → `.env` with `ICLOUD_USER`, `ICLOUD_APP_PASSWORD`, `BRIDGE_TOKEN`.
 
+## MCP (Claude, Codex, Grok, Cursor, …)
+
+Keep `npm start` running. MCP is a thin stdio wrapper: it only calls `http://127.0.0.1:8787/v1` with your bridge token. It never sees mailbox passwords.
+
+**1. Build once** (if you haven’t):
+
+```bash
+npm run build
+```
+
+**2. Absolute path to the MCP entry** (copy yours):
+
+```bash
+# macOS / Linux
+echo "$(pwd)/dist/mcp.js"
+```
+
+**3. Add a stdio MCP server** named `imaplane` in your client:
+
+| Client | How |
+|---|---|
+| **Claude Desktop** | Edit `claude_desktop_config.json` → `mcpServers` (JSON below) |
+| **Claude Code** | `claude mcp add imaplane -- node /ABS/PATH/TO/imaplane/dist/mcp.js` |
+| **Codex** | Add the same stdio server in Codex MCP settings / config |
+| **Grok** | `grok mcp add imaplane -- node /ABS/PATH/TO/imaplane/dist/mcp.js` or paste [`grok.mcp.toml.example`](./grok.mcp.toml.example) into `~/.grok/config.toml` |
+| **Cursor** | Settings → MCP → add stdio server with the same `command` / `args` |
+| **Other MCP hosts** | Same pattern: command `node`, args `["/ABS/PATH/TO/imaplane/dist/mcp.js"]` |
+
+Generic JSON (Claude Desktop and most hosts):
+
+```json
+{
+  "mcpServers": {
+    "imaplane": {
+      "command": "node",
+      "args": ["/ABS/PATH/TO/imaplane/dist/mcp.js"]
+    }
+  }
+}
+```
+
+The MCP process loads `BRIDGE_TOKEN` from this project’s `.env` (or set `BRIDGE_TOKEN` / optional `BRIDGE_URL` in the server `env` block).
+
+**Tools:** `mail_health`, `mail_accounts`, `mail_folders`, `mail_create_folder`, `mail_list`, `mail_read`, `mail_search`, `mail_move`, `mail_flags`, `mail_folder_profile`, `mail_save_folder_profile`, `mail_apply_folder_profile`, `mail_rules_dry_run`, `mail_rules_apply`.  
+`mail_send` appears **only** when sending is enabled.
+
+Agent playbook: [`BOT.md`](./BOT.md) (folder setup = interview → propose → confirm → create).
+
 ## iCloud / Apple Mail
 
 1. [appleid.apple.com](https://appleid.apple.com) → **Sign-In and Security** → **App-Specific Passwords**.
@@ -104,22 +152,6 @@ Optional query/body: `account`
 | POST | `/messages/send` | **Only if `send.enabled`** |
 
 OpenAPI: [`openapi.yaml`](./openapi.yaml).
-
-## MCP
-
-The HTTP process owns IMAP. MCP stdio only calls `http://127.0.0.1:8787/v1`. It never sees mailbox passwords.
-
-```bash
-npm start
-grok mcp add imaplane -- node /ABS/PATH/TO/imaplane/dist/mcp.js
-```
-
-Or paste [`grok.mcp.toml.example`](./grok.mcp.toml.example) into `~/.grok/config.toml`.
-
-Stable tools: `mail_health`, `mail_accounts`, `mail_folders`, `mail_create_folder`, `mail_list`, `mail_read`, `mail_search`, `mail_move`, `mail_flags`, `mail_folder_profile`, `mail_save_folder_profile`, `mail_apply_folder_profile`, `mail_rules_dry_run`, `mail_rules_apply`.  
-`mail_send` is registered **only** when sending is enabled.
-
-Playbook: [`BOT.md`](./BOT.md). If the user asks about folders, interview → propose → confirm → create.
 
 ## Folder profiles
 
